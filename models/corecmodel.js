@@ -8,7 +8,6 @@ const correctSchema = new mongoose.Schema({
     required: true,
   },
 
-
   titre: {
     type: String,
     required: true,

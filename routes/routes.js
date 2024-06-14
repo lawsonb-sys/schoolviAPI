@@ -24,7 +24,7 @@ router.delete( '/exos/:id', exoctr.deleteExo);
 
 //Les  routes pour les correction
 
-router.post("/correction/post/:userId/:exoId",upload3.single('cpdf'), correctionctr.createCorrect);
+router.post("/correction/post/:userId",upload3.single('cpdf'), correctionctr.createCorrect);
 router.get( '/correction', correctionctr.findCorrect);
 router.put( '/correction/update/:id',upload3.single('cpdf'), correctionctr.updateCorrect);
 router.delete( '/correction/:id', correctionctr.deleteCorrect);
