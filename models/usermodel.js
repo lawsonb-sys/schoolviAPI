@@ -40,6 +40,12 @@ const UserSchema = new mongoose.Schema({
     default: "user",
     enum: ["user", "admin"],
   },
+  dateExpiration: {
+    type: String,
+    allowNull: false,
+    default: Date.now(),
+    
+  },
 });
 
 const profileSchema = new mongoose.Schema({

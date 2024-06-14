@@ -25,6 +25,7 @@ exports.createuser = async (req, res) => {
         serie: req.body.serie,
         classe: req.body.classe,
         role: req.body.role,
+        dateExpiration: req.body.dateExpiration,
         profile: profile._id,
       });
       await user.save();
@@ -38,6 +39,8 @@ exports.createuser = async (req, res) => {
         serie: req.body.serie,
         classe: req.body.classe,
         role: req.body.role,
+        dateExpiration: req.body.dateExpiration,
+        
       });
       await user.save();
       res.status(201).json(user);
@@ -100,6 +103,7 @@ exports.updateUser = async (req, res) => {
     userUp.serie = req.body.serie || userUp.serie;
     userUp.classe = req.body.classe || userUp.classe;
     userUp.role = req.body.role || userUp.role;
+    userUp.dateExpiration = req.body.dateExpiration || userUp.dateExpiration;
     userUp.profile = profile._id;
 
     await userUp.save();

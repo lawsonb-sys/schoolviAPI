@@ -2,17 +2,22 @@ const express =require('express');
 const bodyParser =require('body-parser');
 const mongoosse =require('mongoose');
 const app =express();
+require('dotenv').config();
 const router =require('./routes/routes');
 app.use(bodyParser.json());
 app.use("/api",router);
 app.use(express.urlencoded({extended:true}));
 
+app.use("/",(req,res)=>{
+    res.send("Wellecom to your API schoolvi");
+})
 
-mongoosse.connect('mongodb://localhost:27017/schoolvi',{
+mongoosse.connect(process.env.MONGO_URL,{
     useNewUrlParser: true,
   useUnifiedTopology: true,
 })
+port =process.env.PORT || 3001;
 
-app.listen(3001,()=>{
-    console.log("server is running ....")
+app.listen(port,()=>{
+    console.log("server is running on",port)
 })
