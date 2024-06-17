@@ -9,7 +9,7 @@ module.exports = router;
 // les routes pour les utilisateurs
 router.post("/users/post",upload.single('profile'), usercttroller.createuser);
 router.get( '/users', usercttroller.findUsers);
-router.get( '/users/login', usercttroller.login);
+router.post( '/users/login', usercttroller.login);
 router.put( '/users/:id', upload.single('profile'),usercttroller.updateUser);
 router.delete( '/users/:id', usercttroller.deleteUser);
 
