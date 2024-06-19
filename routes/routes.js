@@ -3,7 +3,8 @@ const usercttroller = require("../controller/userctr");
 const exoctr = require("../controller/exoctr");
 const correctionctr = require("../controller/correctctr");
 const {upload,upload2,upload3} =require('../multer/upload');
-
+const path = require('path');
+const fs = require('fs');
 const router = express.Router();
 module.exports = router;
 // les routes pour les utilisateurs
@@ -12,6 +13,10 @@ router.get( '/users', usercttroller.findUsers);
 router.post( '/users/login', usercttroller.login);
 router.put( '/users/:id', upload.single('profile'),usercttroller.updateUser);
 router.delete( '/users/:id', usercttroller.deleteUser);
+router.get('/users/profile',express.static(path.join(__dirname,'../uploads/IMAG0097.jpg')));
+
+
+
 
 //les routes pour les exercices
 

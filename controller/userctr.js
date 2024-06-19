@@ -10,11 +10,15 @@ const bcrypt = require("bcrypt");
 exports.createuser = async (req, res) => {
   try {
     if (req.file) {
+    //  const imageUrl = `https://your-api-domain.com/uploads/${req.file.filename}`;
       const profile = new Profile({
-        filename: req.file.originalname,
+        filename: req.file.filename,
         contentType: req.file.mimetype,
         data: req.file.buffer,
       });
+     // const imagePath = path.join(__dirname, 'uploads', profile.filename);
+    //  console.log('buffer :',imagePath);
+      
       await profile.save();
 
       const user = new User({
