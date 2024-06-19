@@ -10,14 +10,14 @@ const bcrypt = require("bcrypt");
 exports.createuser = async (req, res) => {
   try {
     if (req.file) {
-    //  const imageUrl = `https://your-api-domain.com/uploads/${req.file.filename}`;
+      const imageUrl = `https://schoolviapi.onrender.com/image/up/${req.file.filename}`;
       const profile = new Profile({
         filename: req.file.filename,
         contentType: req.file.mimetype,
         data: req.file.buffer,
       });
-     // const imagePath = path.join(__dirname, 'uploads', profile.filename);
-    //  console.log('buffer :',imagePath);
+     
+      console.log('buffer :',imageUrl);
       
       await profile.save();
 
@@ -31,6 +31,7 @@ exports.createuser = async (req, res) => {
         role: req.body.role,
         dateExpiration: req.body.dateExpiration,
         profile: profile._id,
+        image:imageUrl,
       });
       await user.save();
       res.status(201).json(user);

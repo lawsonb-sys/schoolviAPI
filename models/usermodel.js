@@ -46,6 +46,12 @@ const UserSchema = new mongoose.Schema({
     default: Date.now(),
     
   },
+  image: {
+    type: String,
+    allowNull: true,
+    default: null,
+  },
+
 });
 
 const profileSchema = new mongoose.Schema({
