@@ -166,11 +166,9 @@ try {
     if(!isMatch){
       return res.status(400).json({message:"Mot de passe incorrect"})
     }
-    const users = []; 
-    users.push(user);
-    users.push(profiles);
+    
 
-    res.status(200).json({message:"utilisateur connecter avec succès !",data:users});
+    res.status(200).json(user);
     
 } catch (error) {
   res.status(500).json({ message: error.message });
