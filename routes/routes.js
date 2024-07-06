@@ -11,7 +11,8 @@ module.exports = router;
 router.post("/users/post",upload.single('profile'), usercttroller.createuser);
 router.get( '/users', usercttroller.findUsers);
 router.post( '/users/login', usercttroller.login);
-router.put( '/users/:id', upload.single('profile'),usercttroller.updateUser);
+//router.put( '/users/:id', upload.single('profile'),usercttroller.updateUser);
+router.put( '/users/:id',upload.single('profile'),usercttroller.updateU);
 router.delete( '/users/:id', usercttroller.deleteUser);
 router.get('/users/profile',express.static(path.join(__dirname,'../uploads/IMAG0097.jpg')));
 

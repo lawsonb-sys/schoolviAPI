@@ -3,16 +3,16 @@ const bcrypt = require("bcrypt");
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    allowNull: true,
   },
   prenom: {
     type: String,
-    required: true,
+    allowNull: true,
   },
   email: {
     type: String,
-    unique: true,
-    required: true,
+    unique: false,
+    allowNull: true,
   },
   password: {
     type: String,
@@ -20,17 +20,16 @@ const UserSchema = new mongoose.Schema({
   },
   classe: {
     type: String,
-    required: true,
+    allowNull: true,
   },
   serie: {
     type: String,
-    required: true,
+    allowNull: true,
   },
 
   profile: {
-   type: mongoose.Schema.Types.ObjectId,
-   ref: "profile",
-   required: false,
+   type:String,
+   allowNull: true,
     
   },
 

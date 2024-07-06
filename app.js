@@ -10,6 +10,7 @@ const router =require('./routes/routes');
 app.use(bodyParser.json());
 app.use("/api",router);
 app.use(express.urlencoded({extended:true}));
+app.use('/uploads',express.static(path.join(__dirname,'uploads')));
 
  /*app.use("/",(req,res)=>{
     res.send("Wellecom to your oooh my API schoolvi");
@@ -24,8 +25,8 @@ app.get('/image/up/:img', (req, res) => {
       .catch(() => res.status(404).send('Image introuvable')); // Envoyer une erreur si elle n'est pas trouvée
   });
 mongoosse.connect(process.env.MONGO_URL,{
-    useNewUrlParser: true,
-  useUnifiedTopology: true,
+   
+  
 })
 port =process.env.PORT || 3001;
 
