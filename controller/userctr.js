@@ -13,7 +13,7 @@ exports.createuser = async (req, res) => {
     
     if (req.file) {
       
-      const baseURL = 'http://localhost:3001';
+      const baseURL = 'https://schoolviapi.onrender.com';
       userdata.profile = '/uploads/' + path.basename(req.file.path).replace(/\\/g, '/');
       userdata.image = baseURL + userdata.profile;
     //  await updateUser.save();
@@ -129,7 +129,7 @@ exports.updateU = async (req, res) => {
       if (curentUser.profile) {
         await deleteoldPic(curentUser.profile);
       }
-      const baseURL = 'http://localhost:3001';
+      const baseURL = 'https://schoolviapi.onrender.com';
       updateUser.profile = '/uploads/' + path.basename(req.file.path).replace(/\\/g, '/');
       updateUser.image = baseURL + updateUser.profile;
       await updateUser.save();
