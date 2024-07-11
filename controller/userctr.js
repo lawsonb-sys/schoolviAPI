@@ -5,26 +5,23 @@ const path = require("path");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-
-
 exports.createuser = async (req, res) => {
   try {
     const userdata = req.body;
-    
+
     if (req.file) {
-      
-      const baseURL = 'https://schoolviapi.onrender.com';
-      userdata.profile = '/uploads/' + path.basename(req.file.path).replace(/\\/g, '/');
+      const baseURL = "https://schoolviapi.onrender.com";
+      userdata.profile =
+        "/uploads/" + path.basename(req.file.path).replace(/\\/g, "/");
       userdata.image = baseURL + userdata.profile;
-    //  await updateUser.save();
+      //  await updateUser.save();
     }
     const user = new User(userdata);
     await user.save();
 
     res.status(201).json({
-      
       data: user,
-    })
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -88,26 +85,27 @@ exports.updateUser = async (req, res) => {
 
     await userUp.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Utilisateur modifié avec succès",
-        data: userUp,
-        data2: profile,
-      });
+    res.status(200).json({
+      message: "Utilisateur modifié avec succès",
+      data: userUp,
+      data2: profile,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 async function deleteoldPic(oldpath) {
   try {
-    const fullPath = path.join(__dirname, '..', oldpath);
-    await fs.access(fullPath);  // Vérifie si le fichier existe
+    const fullPath = path.join(__dirname, "..", oldpath);
+    await fs.access(fullPath); // Vérifie si le fichier existe
     await fs.unlink(fullPath);
     console.log("Fichier supprimé avec succès :", fullPath);
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      console.log("Le fichier n'existe pas, pas besoin de le supprimer :", oldpath);
+    if (error.code === "ENOENT") {
+      console.log(
+        "Le fichier n'existe pas, pas besoin de le supprimer :",
+        oldpath
+      );
     } else {
       console.error("Erreur lors de la suppression du fichier :", error);
     }
@@ -120,27 +118,33 @@ exports.updateU = async (req, res) => {
     console.log("prenom :", user);
     const curentUser = await User.findById(userid);
 
-
     if (!curentUser) {
       res.status(404).json({ message: "Utilisateur non trouvé" });
     }
-    const updateUser = await User.findByIdAndUpdate(userid, user, { new: true });
+    const updateUser = await User.findByIdAndUpdate(userid, user, {
+      new: true,
+    });
     if (req.file) {
       if (curentUser.profile) {
         await deleteoldPic(curentUser.profile);
       }
-      const baseURL = 'https://schoolviapi.onrender.com';
-      updateUser.profile = '/uploads/' + path.basename(req.file.path).replace(/\\/g, '/');
+      const baseURL = "https://schoolviapi.onrender.com";
+      updateUser.profile =
+        "/uploads/" + path.basename(req.file.path).replace(/\\/g, "/");
       updateUser.image = baseURL + updateUser.profile;
       await updateUser.save();
     }
 
     res.json({ message: "Utilisateur modifié avec succès", data: updateUser });
-
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la modification de l'utilisateur", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Erreur lors de la modification de l'utilisateur",
+        error: error.message,
+      });
   }
-}
+};
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -172,21 +176,16 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
-    const profiles = await Profile.findById(user.profile);
-
     if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" })
-
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Mot de passe incorrect" })
+      return res.status(400).json({ message: "Mot de passe incorrect" });
     }
 
-
     res.status(200).json(user);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
