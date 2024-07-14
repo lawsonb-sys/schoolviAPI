@@ -135,7 +135,7 @@ exports.updateU = async (req, res) => {
       await updateUser.save();
     }
 
-    res.json({ updateUser });
+    res.json(updateUser);
   } catch (error) {
     res.status(500).json({
       message: "Erreur lors de la modification de l'utilisateur",
