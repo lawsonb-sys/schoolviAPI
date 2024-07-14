@@ -135,14 +135,12 @@ exports.updateU = async (req, res) => {
       await updateUser.save();
     }
 
-    res.json({ message: "Utilisateur modifié avec succès", data: updateUser });
+    res.json({ updateUser });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Erreur lors de la modification de l'utilisateur",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Erreur lors de la modification de l'utilisateur",
+      error: error.message,
+    });
   }
 };
 exports.deleteUser = async (req, res) => {
@@ -174,7 +172,9 @@ exports.deleteUser = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(email, password);
     const user = await User.findOne({ email });
+    console.log(user);
 
     if (!user) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
