@@ -46,18 +46,6 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-const profileSchema = new mongoose.Schema({
-  filename: String,
-  contentType: String,
-  data: Buffer,
-});
-
-UserSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
 const User = mongoose.model("users", UserSchema);
-const Profile = mongoose.model("profile", profileSchema);
 
-module.exports = { User, Profile };
+module.exports = { User };
