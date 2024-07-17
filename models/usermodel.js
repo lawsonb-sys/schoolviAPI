@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    allowNull: true,
   },
   classe: {
     type: String,
@@ -28,9 +28,8 @@ const UserSchema = new mongoose.Schema({
   },
 
   profile: {
-   type:String,
-   allowNull: true,
-    
+    type: String,
+    allowNull: true,
   },
 
   role: {
@@ -43,21 +42,18 @@ const UserSchema = new mongoose.Schema({
     type: String,
     allowNull: false,
     default: Date.now(),
-    
   },
   image: {
     type: String,
     allowNull: true,
     default: null,
   },
-
 });
 
 const profileSchema = new mongoose.Schema({
   filename: String,
   contentType: String,
   data: Buffer,
-  
 });
 
 UserSchema.pre("save", async function (next) {
@@ -68,4 +64,4 @@ UserSchema.pre("save", async function (next) {
 const User = mongoose.model("users", UserSchema);
 const Profile = mongoose.model("profile", profileSchema);
 
-module.exports = {User, Profile};
+module.exports = { User, Profile };
