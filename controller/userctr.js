@@ -17,6 +17,10 @@ exports.createuser = async (req, res) => {
       //  await updateUser.save();
     }
     const user = new User(userdata);
+    if (user.password) {
+      const genSalt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, genSalt);
+    }
     await user.save();
 
     res.status(201).json({
