@@ -34,15 +34,11 @@ const UserSchema = new mongoose.Schema({
 
   role: {
     type: String,
-    allowNull: false,
+    allowNull: true,
     default: "user",
     enum: ["user", "admin"],
   },
-  dateExpiration: {
-    type: String,
-    allowNull: false,
-    default: Date.now(),
-  },
+
   image: {
     type: String,
     allowNull: true,
