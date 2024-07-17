@@ -115,11 +115,15 @@ exports.updateU = async (req, res) => {
   try {
     const userid = req.params.id;
     const user = req.body;
-    console.log("prenom :", user);
+
     const curentUser = await User.findById(userid);
 
     if (!curentUser) {
       res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+    if (user.password) {
+      const genSalt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, genSalt);
     }
     const updateUser = await User.findByIdAndUpdate(userid, user, {
       new: true,
