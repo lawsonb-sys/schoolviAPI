@@ -13,9 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads_2", express.static(path.join(__dirname, "uploads_2")));
 
-app.use("/", (req, res) => {
+/*app.use("/", (req, res) => {
   res.send("Wellecom to your oooh my API schoolvi");
-});
+});*/
 app.get("/image/up/:img", (req, res) => {
   const imagePath = path.join(__dirname, "uploads/", req.params.img);
 
