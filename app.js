@@ -16,7 +16,7 @@ app.use("/uploads_2", express.static(path.join(__dirname, "uploads_2")));
 app.use("/", (req, res) => {
   res.send("Wellecom to your oooh my API schoolvi");
 });
-/*app.get("/image/up/:img", (req, res) => {
+app.get("/image/up/:img", (req, res) => {
   const imagePath = path.join(__dirname, "uploads/", req.params.img);
 
   // Vérifier si le fichier image existe
@@ -25,7 +25,7 @@ app.use("/", (req, res) => {
     .access(imagePath, fs.constants.F_OK)
     .then(() => res.sendFile(imagePath)) // Envoyer l'image si elle existe
     .catch(() => res.status(404).send("Image introuvable")); // Envoyer une erreur si elle n'est pas trouvée
-});*/
+});
 mongoosse.connect(process.env.MONGO_URL, {});
 port = process.env.PORT || 3001;
 
