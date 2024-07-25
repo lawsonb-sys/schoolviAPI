@@ -12,6 +12,7 @@ app.use("/api", router);
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads_2", express.static(path.join(__dirname, "uploads_2")));
+app.use("/upload_3", express.static(path.join(__dirname, "upload_3")));
 
 /*app.use("/", (req, res) => {
   res.send("Wellecom to your oooh my API schoolvi");
