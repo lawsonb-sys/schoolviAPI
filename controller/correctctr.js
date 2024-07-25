@@ -1,39 +1,45 @@
-const { Correction, CPdf } = require("../models/corecmodel");
+const { Correction } = require("../models/corecmodel");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs").promises;
 
 exports.createCorrect = async (req, res) => {
   try {
-   
-    if (req.file) {
-      const cpdf = new CPdf({
-        filename: req.file.filename,
-        mimetype: req.file.mimetype,
-        data: req.file.buffer,
-      });
-
-      await cpdf.save();
-     
-      const correction = new Correction({
-        userId: req.params.userId,
-
-        titre: req.body.titre,
-        serie: req.body.serie,
-        classe: req.body.classe,
-        cpdf: cpdf._id,
-      });
-      await correction.save();
-
-      res.status(201).json({
-        message: "exercie créé avec succès",
-        data: correction,
-        pdf: cpdf,
-      });
-    } else {
-      res.status(400).json({ message: "fichier introuvable" });
+    // Créer d'abord le document PDF
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ message: "Aucun fichier PDF n'a été fourni" });
     }
+    const baseURL = "https://schoolviapi.onrender.com"; // Utilisez le port sur lequel votre serveur Express fonctionne
+    const pdfPath =
+      "/uploads_3/" + path.basename(req.file.path).replace(/\\/g, "/");
+    const pdfURL = baseURL + pdfPath;
+    // Créer un nouvel exercice
+    const newCorrection = new Correction({
+      userId: req.body.userId,
+      titre: req.body.titre,
+      serie: req.body.serie,
+      classe: req.body.classe,
+      matier: req.body.matier,
+      cpdf: {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+        data: pdfURL,
+      },
+    });
+
+    // Sauvegarder l'exercice dans la base de données
+    const savedCorrection = await newCorrection.save();
+
+    res.status(201).json({
+      message: "Exercice créé avec succès",
+      exercice: savedCorrection,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Erreur lors de la création de la correction:", error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la création de la correction" });
   }
 };
 
@@ -45,110 +51,109 @@ exports.findCorrect = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-exports.updateCorrect = async (req, res) => {
-
+async function deleteoldPic(oldpath) {
   try {
-    const correction = await Correction.findById(req.params.id);
+    const fullPath = path.join("upload_3", oldpath.filename);
 
-    const pdf = await CPdf.findById(correction.cpdf);
-
-    if (!correction) {
-      return res.status(404).json({ message: "exercice introuvable" });
-    }
-    const oldPdf = path.join("upload_3", pdf.filename);
-
-    if (fs.existsSync(oldPdf)) {
-      try {
-        fs.unlinkSync(oldPdf);
-       
-      } catch (err) {
-        
-        // Gérez l'erreur de manière appropriée
-      }
-    } else {
-      
-      // Gérez le cas où le fichier est déjà manquant (facultatif)
-    }
-    if (!req.file) {
-      res.status(400).json({ message: "fichier introuvable" });
-    }
-    const cnewpdf = new CPdf({
-      filename: req.file.filename,
-      mimetype: req.file.mimetype,
-      data: req.file.buffer,
-    });
-    await cnewpdf.updateOne({ _id: pdf.id }, { cnewpdf });
-
-    correction.titre = req.body.titre || correction.titre;
-    correction.serie = req.body.serie || correction.serie;
-    correction.classe = req.body.classe || correction.classe;
-    correction.cpdf = cnewpdf._id;
-    await correction.save();
-    res.status(200).json({
-      message: "exercice mis à jour avec succès",
-      data: correction,
-      pdf: cnewpdf,
-    });
+    fs.access(fullPath); // Vérifie si le fichier existe
+    fs.unlink(fullPath);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    if (error.code === "ENOENT") {
+      console.log(
+        "Le fichier n'existe pas, pas besoin de le supprimer :",
+        oldpath
+      );
+    } else {
+      console.error("Erreur lors de la suppression du fichier :", error);
+    }
+  }
+}
+exports.updateCorrect = async (req, res) => {
+  try {
+    let updateData = {
+      titre: req.body.titre,
+      serie: req.body.serie,
+      classe: req.body.classe,
+      matier: req.body.matier,
+    };
+
+    if (req.file) {
+      const baseURL = "https://schoolviapi.onrender.com";
+      const pdfPath = "/upload_3/" + req.file.filename;
+      const pdfURL = baseURL + pdfPath;
+
+      updateData.cpdf = {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype,
+        data: pdfURL,
+      };
+    }
+    // Supprimer l'ancien fichier PDF si nécessaire
+    const oldCorrection = await Correction.findById(req.params.id);
+
+    if (oldCorrection && oldCorrection.cpdf && oldCorrection.cpdf.filename) {
+      await deleteoldPic(oldCorrection.cpdf);
+    }
+
+    const updatedCorrection = await Correction.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+    if (!updatedCorrection) {
+      return res.status(404).json({ message: "Correction non trouvé" });
+    }
+    res.json(updatedCorrection);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'Correction:", error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la mise à jour de l'Correction" });
   }
 };
 
 exports.deleteCorrect = async (req, res) => {
   try {
-    
     const correction = await Correction.findById(req.params.id);
-
-    const pdf = await CPdf.findById(correction.cpdf);
-
-    const field = path.join("upload_3", pdf.filename);
-    if (fs.existsSync(field)) {
-      try {
-        fs.unlinkSync(field);
-        
-      } catch (err) {
-       
-        // Gérez l'erreur de manière appropriée
-      }
-    } else {
-      
-      // Gérez le cas où le fichier est déjà manquant (facultatif)
+    if (!correction) {
+      return res.status(404).json({ message: "Correction non trouvé" });
     }
-    await pdf.deleteOne({ _id: pdf.id });
+
+    // Supprimer le fichier PDF associé
+    if (Correction.cpdf && Correction.cpdf.filename) {
+      await deleteoldPic(Correction.cpdf);
+    }
 
     await Correction.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "fichier supprimer avec succès" });
+    res.json({ message: "Correction supprimé avec succès" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Erreur lors de la suppression de l'Correction:", error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la suppression de l'Correction" });
   }
 };
-
+exports.delets = async (req, res) => {
+  const correction = await Correction.find();
+  if (correction.length > 0) {
+    await Correction.deleteMany();
+    res.status(201).json({ message: "exercices supprimer avec succès" });
+  }
+};
 exports.findcorrectionUiniq = async (req, res) => {
   try {
-    const { serie, classe } = req.body;
-    const correction = await Correction.findOne({ serie, classe });
-    console.log(correction.cpdf);
-
-    if (correction) {
-      const correctpdf = await CPdf.findOne({ _id: correction.cpdf });
-      if(!correctpdf){
-        res.status(404).json({ message: "le pdf du correction introuvable" });
-        return;
-      }
-
-      const PDF = [];
-      PDF.push(correctpdf);
-      PDF.push(correction);
-
-      res
-        .status(200)
-        .json({ message: "correction trouvé avec succès", data: PDF });
+    const { matier, classe } = req.body;
+    const correction = await Correction.find({ matier, classe });
+    if (!correction == 0) {
+      res.status(404).json({ message: "aucun  Correction na été trouver" });
       return;
-    } else {
-      res.status(404).json({ message: "correction introuvable" });
     }
+
+    res.json(correction);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Erreur lors de la recherche de l'Correction:", error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la recherche de l'Correction" });
   }
 };

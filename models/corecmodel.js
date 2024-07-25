@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const correctSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -12,6 +11,10 @@ const correctSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  matier: {
+    type: String,
+    required: true,
+  },
   serie: {
     type: String,
     required: true,
@@ -20,10 +23,23 @@ const correctSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
- cpdf: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "CorrectPDF",
-    required: true,
+  cpdf: {
+    filename: {
+      type: String,
+      required: true,
+    },
+    contentType: {
+      type: String,
+      required: true,
+    },
+    data: {
+      type: String,
+      required: false,
+    },
+    uploadDate: {
+      type: Date,
+      default: Date.now,
+    },
   },
 
   date: {
@@ -33,13 +49,6 @@ const correctSchema = new mongoose.Schema({
   },
 });
 
-const  cpdfSchema = new mongoose.Schema({
-  filename: String,
-  contentType: String,
-  data: Buffer,
-  
-});
-const Correction = mongoose.model("Correction", correctSchema); 
-const CPdf = mongoose.model("CorrectPDF", cpdfSchema);
+const Correction = mongoose.model("Correction", correctSchema);
 
-module.exports = { Correction, CPdf };
+module.exports = { Correction };

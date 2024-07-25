@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
-const exoSchema = new mongoose.Schema({
+
+const exerciceSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-
   titre: {
+    type: String,
+    required: true,
+  },
+  matier: {
     type: String,
     required: true,
   },
@@ -18,12 +22,24 @@ const exoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
- pdf: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ExercicePDF",
-    required: true,
+  pdf: {
+    filename: {
+      type: String,
+      required: true,
+    },
+    contentType: {
+      type: String,
+      required: true,
+    },
+    data: {
+      type: String,
+      required: false,
+    },
+    uploadDate: {
+      type: Date,
+      default: Date.now,
+    },
   },
-
   date: {
     type: Date,
     required: true,
@@ -31,13 +47,6 @@ const exoSchema = new mongoose.Schema({
   },
 });
 
-const  pdfSchema = new mongoose.Schema({
-  filename: String,
-  contentType: String,
-  data: Buffer,
-  
-});
-const Exo = mongoose.model("Exercice", exoSchema);
-const Pdf = mongoose.model("ExercicePDF", pdfSchema);
+const Exercice = mongoose.model("Exercice", exerciceSchema);
 
-module.exports = { Exo, Pdf };
+module.exports = Exercice;

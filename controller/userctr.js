@@ -14,6 +14,7 @@ exports.createuser = async (req, res) => {
       userdata.profile =
         "/uploads/" + path.basename(req.file.path).replace(/\\/g, "/");
       userdata.image = baseURL + userdata.profile;
+      c;
       //  await updateUser.save();
     }
     const user = new User(userdata);
