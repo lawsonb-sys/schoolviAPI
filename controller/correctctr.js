@@ -12,7 +12,7 @@ exports.createCorrect = async (req, res) => {
     }
     const baseURL = "https://schoolviapi.onrender.com"; // Utilisez le port sur lequel votre serveur Express fonctionne
     const pdfPath =
-      "/uploads_3/" + path.basename(req.file.path).replace(/\\/g, "/");
+      "/upload_3/" + path.basename(req.file.path).replace(/\\/g, "/");
     const pdfURL = baseURL + pdfPath;
     // Créer un nouvel exercice
     const newCorrection = new Correction({
