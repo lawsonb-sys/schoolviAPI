@@ -7,6 +7,32 @@ const path = require("path");
 const fs = require("fs");
 require("dotenv").config();
 const router = require("./routes/routes");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("swagger-jsdoc");
+const { info } = require("console");
+const { title } = require("process");
+const { url } = require("inspector");
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Schoolvi API",
+      version: "1.0.0",
+      description: "Documentation de mon API Schoolvi avec swagger",
+    },
+    servers: [
+      { url: `http://localhost:3001`, description: "Development server" },
+      {
+        url: `https://schoolviapi.onrender.com`,
+        description: " server de production",
+      },
+    ],
+  },
+  apis: ["./routes/routes.js"],
+};
+const swaggerSpec = swaggerDocument(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(bodyParser.json());
 app.use("/api", router);
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +53,7 @@ app.get("/image/up/:img", (req, res) => {
     .then(() => res.sendFile(imagePath)) // Envoyer l'image si elle existe
     .catch(() => res.status(404).send("Image introuvable")); // Envoyer une erreur si elle n'est pas trouvée
 });
+
 mongoosse.connect(process.env.MONGO_URL, {});
 port = process.env.PORT || 3001;
 
