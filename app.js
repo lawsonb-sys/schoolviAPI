@@ -12,6 +12,7 @@ const swaggerDocument = require("swagger-jsdoc");
 const { info } = require("console");
 const { title } = require("process");
 const { url } = require("inspector");
+const cors = require("cors");
 
 const swaggerOptions = {
   definition: {
@@ -32,6 +33,7 @@ const swaggerOptions = {
   apis: ["./routes/routes.js"],
 };
 const swaggerSpec = swaggerDocument(swaggerOptions);
+app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(bodyParser.json());
 app.use("/api", router);
