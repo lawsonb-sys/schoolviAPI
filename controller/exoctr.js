@@ -43,7 +43,7 @@ exports.createExo = async (req, res) => {
     console.error("Erreur lors de la création de l'exercice:", error);
     res
       .status(500)
-      .json({ message: "Erreur lors de la création de l'exercice" });
+      .json({ message: "Erreur lors de la création de l'exercice", error });
   }
 };
 
